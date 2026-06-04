@@ -315,4 +315,7 @@ OmniCare is not a clinical tool, nor is it a generic AI chat wrapper. It is buil
 
 ## License
 
-This project was built for the MongoDB AI Hackathon.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+*Built for the MongoDB AI Hackathon.*
+
