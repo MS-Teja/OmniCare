@@ -8,17 +8,12 @@
 class Config {
   Config._();
 
-  static const String apiHost = String.fromEnvironment(
-    'API_HOST',
-    defaultValue: 'localhost',
+  static const String baseUrlString = String.fromEnvironment(
+    'BASE_URL',
+    defaultValue: 'https://omnicare-backend-713636545861.us-central1.run.app',
   );
 
-  static const String apiPort = String.fromEnvironment(
-    'API_PORT',
-    defaultValue: '8000',
-  );
-
-  static String get baseUrl => 'http://$apiHost:$apiPort';
+  static String get baseUrl => baseUrlString;
 
   /// Request timeout — Gemini can be slow under load.
   static const Duration requestTimeout = Duration(seconds: 45);

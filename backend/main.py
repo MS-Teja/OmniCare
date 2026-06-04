@@ -55,8 +55,8 @@ async def lifespan(app: FastAPI):
     """Pre-warm the MCP STDIO session at startup, close on shutdown."""
     global _mcp_toolset, _mcp_session
     server_params = StdioServerParameters(
-        command="npx",
-        args=["-y", "mongodb-mcp-server@latest"],
+        command="mongodb-mcp-server",
+        args=[],
         env={
             "MDB_MCP_CONNECTION_STRING": os.getenv("MDB_MCP_CONNECTION_STRING"),
             "PATH": os.getenv("PATH", "")
@@ -317,14 +317,26 @@ async def query_interventions(req: QueryRequest):
         # "meaningful integration" requirement by utilizing MongoDB's capabilities as
         # our agent's superpower — with zero cold-start latency.
         async with _mcp_lock:
-            search_results = await _mcp_session.call_tool(
-                "aggregate",
-                arguments={
-                    "database": "omnicare_db",
-                    "collection": "omnicare_collection",
-                    "pipeline": pipeline
-                }
-            )
+            # Cloud Run CPU throttling can cause the first MCP IPC call to take >5s to wake up the Node process.
+            # We add a simple retry mechanism.
+            for attempt in range(2):
+                try:
+                    search_results = await asyncio.wait_for(
+                        _mcp_session.call_tool(
+                            "aggregate",
+                            arguments={
+                                "database": "omnicare_db",
+                                "collection": "omnicare_collection",
+                                "pipeline": pipeline
+                            }
+                        ),
+                        timeout=15.0
+                    )
+                    break
+                except (TimeoutError, asyncio.TimeoutError) as e:
+                    if attempt == 1:
+                        raise HTTPException(status_code=500, detail="MCP backend timeout after retry") from e
+                    print("⚠️ MCP tool call timed out, retrying...")
         
         if getattr(search_results, 'isError', False):
             error_msgs = "\n".join([c.text for c in search_results.content if c.type == 'text'])
@@ -383,6 +395,7 @@ async def list_patients():
         )
         return {"status": "success", "patients": patient_ids}
     except Exception as e:
+        logging.exception(f"GET /patients failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
