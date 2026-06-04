@@ -1,7 +1,7 @@
 /// OmniCare configuration.
 ///
 /// For physical device testing, run with:
-///   flutter run --dart-define=API_HOST=192.168.x.x
+///   flutter run --dart-define=BASE_URL=http://192.168.x.x:8000
 ///
 /// The app auto-detects the host from --dart-define so there's
 /// no settings screen needed — just pass it at launch time.

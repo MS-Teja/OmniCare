@@ -292,6 +292,7 @@ async def ingest_observation(obs: Observation):
 
 @app.post("/query")
 async def query_interventions(req: QueryRequest):
+    global _mcp_session
     try:
         # 🚀 NO MANUAL EMBEDDING REQUIRED!
         # Atlas Auto-Embeddings vectorize the query text dynamically server-side.
@@ -333,10 +334,16 @@ async def query_interventions(req: QueryRequest):
                         timeout=15.0
                     )
                     break
-                except (TimeoutError, asyncio.TimeoutError) as e:
+                except (TimeoutError, asyncio.TimeoutError, Exception) as e:
                     if attempt == 1:
                         raise HTTPException(status_code=500, detail="MCP backend timeout after retry") from e
-                    print("⚠️ MCP tool call timed out, retrying...")
+                    print(f"⚠️ MCP tool call failed/timed out ({e}), waiting 2 seconds and retrying...")
+                    await asyncio.sleep(2)
+                    # The ADK graceful error handling might require us to re-init the session if it broke
+                    try:
+                        _mcp_session = await _mcp_toolset._mcp_session_manager.create_session()
+                    except Exception:
+                        pass
         
         if getattr(search_results, 'isError', False):
             error_msgs = "\n".join([c.text for c in search_results.content if c.type == 'text'])

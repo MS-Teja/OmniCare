@@ -199,14 +199,14 @@ cd frontend
 flutter pub get
 
 # Run on a connected device or emulator
-# For physical device, replace with your machine's local IP:
-flutter run --dart-define=API_HOST=192.168.x.x
+# For physical device, specify your local backend URL:
+flutter run --dart-define=BASE_URL=http://192.168.x.x:8000
 
-# For emulator (uses localhost by default):
+# For emulator (uses Cloud Run URL by default):
 flutter run
 ```
 
-> **Note:** The `API_HOST` must be your machine's local network IP (not `localhost`) when running on a physical device. Find it with `ifconfig | grep "inet "` on macOS.
+> **Note:** When using `--dart-define=BASE_URL`, it must point to your machine's local network IP (not `localhost`) when running on a physical device. Find it with `ifconfig | grep "inet "` on macOS.
 
 ---
 
@@ -222,8 +222,8 @@ gcloud run deploy omnicare-backend \
   --source . \
   --region us-central1 \
   --allow-unauthenticated \
-  --set-env-vars "GOOGLE_API_KEY=your_key,MDB_MCP_CONNECTION_STRING=your_connection_string" \
-  --min-instances 1
+  --set-secrets="GOOGLE_API_KEY=GOOGLE_API_KEY:latest,MDB_MCP_CONNECTION_STRING=MDB_MCP_CONNECTION_STRING:latest" \
+  --min-instances 0
 ```
 
 > **Important:** Set `--min-instances 1` so the MCP session pre-warms before the first request hits the service. Without this, the first request after a cold start will take an extra 2-4 seconds while the Node.js MCP process spins up.
@@ -299,6 +299,18 @@ OmniCare is not a clinical tool, nor is it a generic AI chat wrapper. It is buil
 
 ---
 
+## Production Considerations & HIPAA
+
+This repository and demo use fully synthetic patient data. 
+
+**Is this HIPAA compliant?**
+A production deployment of OmniCare would involve processing Protected Health Information (PHI). Google Cloud Platform (Agent Builder, Cloud Run) and MongoDB Atlas both support HIPAA-compliant configurations. To deploy this to production, you would need to:
+1. Ensure your Google Cloud organization has a signed Business Associate Agreement (BAA) with Google.
+2. Ensure your MongoDB Atlas account has a signed BAA with MongoDB and is configured according to their security whitepapers.
+3. Add end-user authentication (e.g., Firebase Auth) and granular role-based access control (RBAC).
+
+---
+
 ## Tech Stack
 
 | Layer | Technology | Role |
@@ -317,5 +329,5 @@ OmniCare is not a clinical tool, nor is it a generic AI chat wrapper. It is buil
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-*Built for the MongoDB AI Hackathon.*
+*Built for the Google Cloud Rapid Agent Hackathon*
 

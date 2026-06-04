@@ -116,7 +116,7 @@ class ApiService {
       final response = await _client
           .get(Uri.parse(
               '${Config.baseUrl}/history?patient_id=${Uri.encodeComponent(patientId)}&limit=$limit'))
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
 
       if (response.statusCode != 200) {
         throw ApiException(_parseError(response));
@@ -140,7 +140,7 @@ class ApiService {
     try {
       final response = await _client
           .get(Uri.parse('${Config.baseUrl}/patients'))
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
 
       if (response.statusCode != 200) {
         throw ApiException(_parseError(response));
