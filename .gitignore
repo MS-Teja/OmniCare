@@ -1,0 +1,38 @@
+# Python virtual environments
+backend/.venv/
+.venv/
+venv/
+ENV/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables
+backend/.env
+.env
+
+# Logs and databases
+backend/*.log
+*.log
+backend/adk_debug.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Test files and local scripts
+backend/test_*.py
+backend/debug_agent.py
+backend/seed_mr_roy.py
+backend/sample.mp3
+
+#Miscellaneous
+docs.md
+Responsibilities.md
