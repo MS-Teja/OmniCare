@@ -125,7 +125,7 @@ Omnicare/
         ├── services/
         │   └── api_service.dart     # HTTP client with friendly error handling
         ├── theme/
-        │   └── omnicare_theme.dart  # "Warm Sanctuary" design system
+        │   └── omnicare_theme.dart  # High-Clarity design system
         └── widgets/
             ├── chat_bubble.dart       # ACTION/CONTEXT response display
             ├── loading_indicator.dart  # Animated loading states
@@ -283,7 +283,7 @@ OmniCare is not a clinical tool, nor is it a generic AI chat wrapper. It is buil
 |---|---|
 | **Stupidly Simple UX** | Zero complex navigation. Two primary actions from the home screen: Log and Ask. |
 | **Accessible by Default** | 56dp minimum touch targets, high contrast ratios, readable typography via Google Fonts. |
-| **Warm Sanctuary** | Soft earth tones (Cream, Sage, Terracotta). Avoids sterile medical aesthetics and aggressive tech themes. |
+| **High-Clarity Contrast** | Crisp whites, bold Emerald/Sapphire, and deep Slate text. Reduces cognitive load via maximum contrast and clear hierarchy. |
 | **Action-Oriented Clarity** | Agent responses always lead with a direct **ACTION** ("Try this") before providing the **CONTEXT** ("Why"). |
 | **Voice-First Accessible** | Built-in voice recording for caregivers who can't type while managing a situation. Audio is transcribed server-side by Gemini. |
 | **Emergency-Aware** | If the agent detects a medical emergency, it immediately tells the caregiver to call 911/112 before anything else. |
